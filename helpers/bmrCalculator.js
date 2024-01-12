@@ -1,63 +1,63 @@
 const addNumbers = (bmrVariableValues) => {
-  let proteinPercentage = 0;
-  let fatPercentage = 0;
-  let carbsPercentage = 0;
-  const calories = 2000;
-
+  
   console.log("це функція - ");
 
-  const { age, height, weight, activity, gender, goal } = bmrVariableValues;
+  const { birthday, height, currentWeight, levelActivity, sex } =
+    bmrVariableValues;  
+  
+function calculateAge(birthday) {
+  
+  const currentDate = new Date();  
+  const parts = birthday.split(".");
+  
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const year = parseInt(parts[2], 10);
+  
+  const birthdayObj = new Date(year, month - 1, day);  
+  const ageDiff = currentDate - birthdayObj;
+  
+  const userAge = Math.floor(ageDiff / (1000 * 60 * 60 * 24 * 365));
 
-  switch (goal) {
-    case "1":
-      proteinPercentage = 0.25;
-      fatPercentage = 0.2;
-      break;
-    case "2":
-      proteinPercentage = 0.3;
-      fatPercentage = 0.2;
-      break;
-    case "3":
-      proteinPercentage = 0.2;
-      fatPercentage = 0.25;
-      break;
-    default:
-      proteinPercentage = 0.25;
-      fatPercentage = 0.2;
-  }
+  return userAge;
+}
 
-  carbsPercentage = 1 - proteinPercentage - fatPercentage;
-  console.log({ proteinPercentage }, { fatPercentage }, { carbsPercentage });
 
-  const protein = Math.round((proteinPercentage * calories) / 4);
-  const fat = Math.round((fatPercentage * calories) / 9);
-  const carbs = Math.round((carbsPercentage * calories) / 4);
-
-  function addBmrMale(age, height, weight, activity) {
+  function addBmrMale(birthday, height, currentWeight, levelActivity) {
+    const userAge = calculateAge(birthday);
     const BMR1 =
-      Math.floor(88.362 + 13.397 * weight + 4.799 * height - 5.677 * age) *
-      activity;
+      Math.floor(
+        88.362 + 13.397 * currentWeight + 4.799 * height - 5.677 * userAge
+      ) * levelActivity;
 
     return BMR1;
   }
 
-  function addBmrFemale(age, height, weight, activity) {
+  function addBmrFemale(birthday, height, currentWeight, levelActivity) {
+    const userAge = calculateAge(birthday);
     const BMR2 =
-      Math.floor(447.593 + 9.247 * weight + 3.098 * height - 4.33 * age) *
-      activity;
+      Math.floor(
+        447.593 + 9.247 * currentWeight + 3.098 * height - 4.33 * userAge
+      ) * levelActivity;
 
     return BMR2;
   }
 
-  function calculateIndicators(gender, age, height, weight, activity) {
+  function calculateIndicators(
+    birthday,
+    height,
+    currentWeight,
+    levelActivity,
+    sex
+  ) {
     let result = null;
-    switch (gender) {
+    switch (sex) {
       case "male":
-        result = addBmrMale(age, height, weight, activity);
+        result = addBmrMale(birthday, height, currentWeight, levelActivity);
         break;
 
       case "female":
-        result = addBmrFemale(age, height, weight, activity);
+        result = addBmrFemale(birthday, height, currentWeight, levelActivity);
         break;
       default:
         throw new Error("Невідома стать");
@@ -65,41 +65,17 @@ const addNumbers = (bmrVariableValues) => {
     return result;
   }
 
-  const BMR = calculateIndicators(gender, age, height, weight, activity);
+  const BMR = calculateIndicators(
+    birthday,
+    height,
+    currentWeight,
+    levelActivity,
+    sex
+  );
 
-  function calculateRateWater(weight, activity) {
-    let result = null;
-    switch (activity) {
-      case 1:
-        result = weight * 0.03;
-        break;
+  console.log("це функція - ", { BMR });
 
-      case 2:
-        result = weight * 0.03 + 0.35;
-        break;
-
-      case 3:
-        result = weight * 0.03 + 0.45;
-        break;
-
-      case 4:
-        result = weight * 0.03 + 0.6;
-        break;
-
-      case 5:
-        result = weight * 0.03 + 0.7;
-        break;
-
-      default:
-        throw new Error("Невідома активність");
-    }
-    return result;
-  }
-
-  const rateWaterResult = calculateRateWater(weight, activity);
-  const rateWater = rateWaterResult.toFixed(2);
-
-  const results = { protein, fat, carbs, BMR, rateWater };
+  const results =  BMR ;
 
   return results;
 };

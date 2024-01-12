@@ -115,25 +115,35 @@ const userUpdate = Joi.object({
   age: Joi.number().required(),
 });
 
-const userUpdateFive = Joi.object({
+const userUpdateSeven = Joi.object({
   height: Joi.number().required(),
-  weight: Joi.number().required(),
-  age: Joi.number().required(),
-  gender: Joi.string().valid("male", "female"),
-  activity: Joi.number().valid(1, 2, 3, 4, 5),
-  goal: Joi.string().valid("1", "2", "3"),
+  currentWeight: Joi.number().required(),
+  desiredWeight: Joi.number().required(),
+  birthday: Joi.string().required(),
+  sex: Joi.string().valid("male", "female"),
+  levelActivity: Joi.number().valid(1, 2, 3, 4, 5),
+  blood: Joi.string().valid("1", "2", "3", "4"),
 });
 
-const userUpdateFiveKeys = Joi.object()
+const userUpdateSevenKeys = Joi.object()
   .keys({
-    age: userUpdateFive.extract("age").optional(),
-    height: userUpdateFive.extract("height").optional(),
-    weight: userUpdateFive.extract("weight").optional(),
-    gender: userUpdateFive.extract("gender").optional(),
-    activity: userUpdateFive.extract("activity").optional(),
-    goal: userUpdateFive.extract("goal").optional(),
+    height: userUpdateSeven.extract("height").optional(),
+    currentWeight: userUpdateSeven.extract("currentWeight").optional(),
+    desiredWeight: userUpdateSeven.extract("desiredWeight").optional(),
+    birthday: userUpdateSeven.extract("birthday").optional(),
+    sex: userUpdateSeven.extract("sex").optional(),
+    levelActivity: userUpdateSeven.extract("levelActivity").optional(),
+    blood: userUpdateSeven.extract("blood").optional(),
   })
-  .or("age", "height", "weight", "gender", "activity", "goal");
+  .or(
+    "height",
+    "currentWeight",
+    "desiredWeight",
+    "birthday",
+    "sex",
+    "levelActivity",
+    "blood"
+  );
 
 const userUpdateGoal = Joi.object({
   goal: Joi.string().valid("1", "2", "3"),
@@ -147,8 +157,8 @@ const userSchemas = {
   signinSchema,
   signupSchema,
   userUpdate,
-  userUpdateFive,
-  userUpdateFiveKeys,
+  userUpdateSeven,
+  userUpdateSevenKeys,
   userUpdateGoal,
   userUpdateWeight,
 };
