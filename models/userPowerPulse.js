@@ -22,8 +22,8 @@ const userSchema = new Schema(
       required: [true, "Set password for user"],
     },
     blood: {
-      type: String,
-      enum: ["1", "2", "3", "4"],
+      type: Number,
+      enum: [1, 2, 3, 4],
       default: "1",
     },
     sex: {
@@ -31,10 +31,22 @@ const userSchema = new Schema(
       enum: ["male", "female"],
       default: "male",
     },
+    // birthday: {
+    //   type: Date,
+    //   required: [true, "must be older than 18 years"],
+    //   default: "01.01.1989",
+    // },
     birthday: {
       type: Date,
-      required: [true, "must be older than 18 years"],
-      default: "01.01.1989",
+      validate: {
+        validator: function (birthday) {
+          return (
+            isBefore(birthday, new Date()) &&
+            differenceInYears(new Date(), birthday) >= 18
+          );
+        },
+        message: "The user must be over 18 years old.",
+      },
     },
     height: {
       type: Number,
@@ -95,7 +107,7 @@ const signupSchema = Joi.object({
   name: Joi.string().min(2).max(30).required(),
   email: Joi.string().pattern(emailRegex).required(),
   password: Joi.string().min(6).max(16).required(),
-  blood: Joi.string().valid("1", "2", "3", "4"),
+  blood: Joi.string().valid(1, 2, 3, 4),
   sex: Joi.string().valid("male", "female"),
   birthday: Joi.string(),
   height: Joi.number(),
@@ -122,7 +134,7 @@ const userUpdateSeven = Joi.object({
   birthday: Joi.string().required(),
   sex: Joi.string().valid("male", "female"),
   levelActivity: Joi.number().valid(1, 2, 3, 4, 5),
-  blood: Joi.string().valid("1", "2", "3", "4"),
+  blood: Joi.string().valid(1, 2, 3, 4),
 });
 
 const userUpdateSevenKeys = Joi.object()
@@ -145,22 +157,12 @@ const userUpdateSevenKeys = Joi.object()
     "blood"
   );
 
-const userUpdateGoal = Joi.object({
-  goal: Joi.string().valid("1", "2", "3"),
-});
-
-const userUpdateWeight = Joi.object({
-  weight: Joi.number().required(),
-});
-
 const userSchemas = {
   signinSchema,
   signupSchema,
   userUpdate,
   userUpdateSeven,
   userUpdateSevenKeys,
-  userUpdateGoal,
-  userUpdateWeight,
 };
 
 const User = model("user", userSchema);

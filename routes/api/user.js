@@ -1,6 +1,9 @@
 const express = require("express");
 
-const validateBody = require("../../middlewares/validateBody");
+const {
+  validateBody,
+  authenticate,
+} = require("../../middlewares");
 const { userSchemas } = require("../../models/userPowerPulse");
 
 const ctrl = require("../../controllers/user");
@@ -16,5 +19,12 @@ router.patch(
   ctrl.updateUser
 );
 
+router.get("/products", authenticate, ctrl.productsAll);
+router.get("/products/:blood/recommended", authenticate, ctrl.productsRecommended);
+router.get(
+  "/products/:blood/not-recommended",
+  authenticate,
+  ctrl.productsNotRecommended
+);
 
 module.exports = router;
